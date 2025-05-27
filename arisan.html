@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ARISAN ROKOK KALITENGAH</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f4f8;
+            color: #2c3e50;
+            padding: 20px;
+            margin: 0;
+        }
+        h1 {
+            text-align: center;
+            color: #2980b9;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+        }
+        .search-container {
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            align-items: flex-start;
+        }
+        .search-group {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        .search-container label {
+            font-weight: bold;
+            color: #34495e;
+            margin-bottom: 5px;
+        }
+        .search-container select, .search-container input, .search-container button {
+            padding: 12px;
+            border: 2px solid #3498db;
+            border-radius: 8px;
+            font-size: 1em;
+            background-color: #fff;
+            transition: border-color 0.3s;
+        }
+        .search-container select:focus, .search-container input:focus, .search-container button:focus {
+            border-color: #2980b9;
+            outline: none;
+        }
+        .search-container button {
+            background-color: #27ae60;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+        .search-container button:hover {
+            background-color: #219653;
+        }
+        .search-note {
+            font-size: 0.9em;
+            color: #34495e;
+            font-style: italic;
+            margin-top: 5px;
+        }
+        .table-container {
+            max-width: 100%;
+            overflow-x: auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+        h2 {
+            color: #e74c3c;
+            margin-bottom: 15px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 12px;
+            text-align: center;
+            border: 1px solid #dfe6e9;
+        }
+        th {
+            background-color: #3498db;
+            color: #fff;
+            font-weight: bold;
+        }
+        tr:nth-child(even) {
+            background-color: #f7f9fc;
+        }
+        tr:hover {
+            background-color: #ecf0f1;
+        }
+        .summary-row {
+            background-color: #219653;
+            color: #000000;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+        .summary-row td {
+            padding: 15px;
+        }
+        .status-ok {
+            color: #27ae60;
+            font-weight: bold;
+        }
+        .status-x {
+            color: #c0392b;
+            font-weight: bold;
+        }
+        .hidden {
+            display: none;
+        }
+        @media (max-width: 600px) {
+            .search-container {
+                flex-direction: column;
+                align-items: center;
+            }
+            .search-container label, .search-container select, .search-container input, .search-container button {
+                width: 100%;
+                max-width: 300px;
+            }
+            .search-group {
+                align-items: center;
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>ARISAN ROKOK KALITENGAH</h1>
+    <div class="search-container">
+        <div class="search-group">
+            <label for="penerima">Pilih Penerima Arisan:</label>
+            <div class="search-note">*Nama Yang Sudah Menerima Arisan</div>
+            <select id="penerima" onchange="filterPenerima()">
+                <option value="mami" selected>Pak Mami</option>
+                <option value="rambat">Pak Rambat</option>
+            </select>
+        </div>
+        <div class="search-group">
+            <label for="nama">Cari Nama Anggota:</label>
+            <input type="text" id="nama" onkeyup="filterNama()" placeholder="Ketik nama...">
+        </div>
+        <div class="search-group">
+            <label style="visibility: hidden;">Ekspor</label>
+            <button onclick="exportToPDF()">Ekspor ke PDF</button>
+        </div>
+    </div>
+
+    <!-- Tabel Pak Mami -->
+    <div id="table-mami" class="table-container">
+        <h2>Arisan Pak Mami</h2>
+        <table id="mami-table">
+            <thead>
+                <tr>
+                    <th>No</th>
+                    <th>Nama</th>
+                    <th>RT</th>
+                    <th>Jumlah Rokok/Orang</th>
+                    <th>Djarum Super</th>
+                    <th>GG Surya 12</th>
+                    <th>Rp</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="member-row"><td>1</td><td>Irul</td><td>I</td><td>2</td><td></td><td>2</td><td></td><td class="status-ok">OK</td></tr>
+                <tr class="member-row"><td>2</td><td>Puji</td><td>I</td><td>1</td><td>1</td><td></td><td></td><td class="status-ok">OK</td></tr>
+                <tr class="member-row"><td>3</td><td>Rambat</td><td>I</td><td>2</td><td>2</td><td></td><td></td><td class="status-ok">OK</td></tr>
+                <tr class="member-row"><td>4</td><td>Sahrul</td><td>I</td><td>2</td><td></td><td>2</td><td></td><td class="status-ok">OK</td></tr>
+                <tr class="member-row"><td>5</td><td>Sidiq</td><td>I</td><td>2</td><td></td><td>2</td><td></td><td class="status-ok">OK</td></tr>
+                <tr class="member-row"><td>6</td><td>Solikin</td><td>I</td><td>1</td><td>1</td><td></td><td></td><td class="status-ok">OK</td></tr>
+                <tr class="member-row"><td>7</td><td>Suryadi</td><td>I</td><td>2</td><td>2</td><td></td><td></td><td class="status-ok">OK</td></tr>
+                <tr class="member-row"><td>8</td><td>Tofi Cahyono</td><td>I</td><td>2</td><td>2</td><td></td><td></td><td class="status-ok">OK</td></tr>
+                <tr class="member-row"><td>9</td><td>Amalia</td><td>II</td><td>2</td><td>2</td><td></td><td></td><td class="status-ok">OK</td></tr>
+                <tr class="member-row"><td>10</td><td>Amin Makruf</td><td>II</td><td>1</td><td>1</td><td></td><td></td><td class="status-ok">OK</td></tr>
+                <tr class="member-row"><td>11</td><td>Chozin Asror</td><td>II</td><td>0</td><td></td><td></td><td></td><td class="status-x">X</td></tr>
+                <tr class="member-row"><td>12</td><td>Dwi P</td><td>II</td><td>0</td><td></td><td></td><td>50000</td><td class="status-ok">OK</td></tr>
+                <tr class="member-row"><td>13</td><td>Eko Subagyo</td><td>II</td><td>1</td><td></td><td>1</td><td></td><td class="status-ok">OK</td></tr>
+                <tr class="member-row"><td>14</td><td>Fahrul M</td><td>II</td><td>0</td><td></td><td></td><td></td><td class="status-x">X</td></tr>
+                <tr class="member-row"><td>15</td><td>Fauzul Miftah</td><td>II</td><td>1</td><td></td><td>1</td><td></td><td class="status-ok">OK</td></tr>
+                <tr class="member-row"><td>16</td><td>Iqbal Marwan</td><td>II</td><td>2</td><td>2</td><td></td><td></td><td class="status-ok">OK</td></tr>
+                <tr class="member-row"><td>17</td><td>Lisan</td><td>II</td><td>0</td><td></td><td></td><td></td><td class="status-x">X</td></tr>
+                <tr class="member-row"><td>18</td><td>Mat Khoir</td><td>II</td><td>0</td><td></td><td></td><td></td><td class="status-x">X</td></tr>
+                <tr class="member-row"><td>19</td><td>Mat Rifai</td><td>II</td><td>0</td><td></td><td></td><td></td><td class="status-x">X</td></tr>
+                <tr class="member-row"><td>20</td><td>Muam</td><td>II</td><td>0</td><td></td><td></td><td></td><td class="status-x">X</td></tr>
+                <tr class="member-row"><td>21</td><td>Mufadhol</td><td>II</td><td>2</td><td>1</td><td>1</td><td></td><td class="status-ok">OK</td></tr>
+                <tr class="member-row"><td>22</td><td>Munir</td><td>II</td><td>1</td><td>1</td><td></td><td></td><td class="status-ok">OK</td></tr>
+                <tr class="member-row"><td>23</td><td>Muntolip</td><td>II</td><td>2</td><td>1</td><td>1</td><td></td><td class="status-ok">OK</td></tr>
+                <tr class="member-row"><td>24</td><td>Nur Khafi</td><td>II</td><td>2</td><td></td><td>2</td><td></td><td class="status-ok">OK</td></tr>
+                <tr class="member-row"><td>25</td><td>Onjin</td><td>II</td><td>2</td><td></td><td>2</td><td></td><td class="status-ok">OK</td></tr>
+                <tr class="member-row"><td>26</td><td>Ratna</td><td>II</td><td>2</td><td>1</td><td>1</td><td></td><td class="status-ok">OK</td></tr>
+                <tr class="member-row"><td>27</td><td>Rozi</td><td>II</td><td>2</td><td></td><td>2</td><td></td><td class="status-ok">OK</td></tr>
+                <tr class="member-row"><td>28</td><td>Safawi</td><td>II</td><td>2</td><td></td><td>2</td><td></td><td class="status-ok">OK</td></tr>
+                <tr class="member-row"><td>29</td><td>Sodiqun</td><td>II</td><td>2</td><td></td><td>2</td><td></td><td class="status-ok">OK</td></tr>
+                <tr class="member-row"><td>30</td><td>Sugiyanto</td><td>II</td><td>1</td><td></td><td>1</td><td></td><td class="status-ok">OK</td></tr>
+                <tr class="member-row"><td>31</td><td>Tangin</td><td>II</td><td>2</td><td></td><td>2</td><td></td><td class="status-ok">OK</td></tr>
+                <tr class="member-row"><td>32</td><td>Taqin</td><td>II</td><td>2</td><td>1</td><td>1</td><td></td><td class="status-ok">OK</td></tr>
+                <tr class="member-row"><td>33</td><td>Laras Pak Dar</td><td>III</td><td>2</td><td></td><td>2</td><td></td><td class="status-ok">OK</td></tr>
+                <tr class="member-row"><td>34</td><td>Hariyanto</td><td>III</td><td>2</td><td>2</td><td></td><td></td><td class="status-ok">OK</td></tr>
+                <tr class="member-row"><td>35</td><td>Khabib A</td><td>III</td><td>2</td><td>1</td><td>1</td><td></td><td class="status-ok">OK</td></tr>
+                <tr class="member-row"><td>36</td><td>Kun</td><td>III</td><td>2</td><td>1</td><td>1</td><td></td><td class="status-ok">OK</td></tr>
+                <tr class="member-row"><td>37</td><td>M Ikhsan M</td><td>III</td><td>0</td><td></td><td></td><td></td><td class="status-x">X</td></tr>
+                <tr class="member-row"><td>38</td><td>Mat Fakih</td><td>III</td><td>2</td><td>1</td><td>1</td><td></td><td class="status-ok">OK</td></tr>
+                <tr class="member-row"><td>39</td><td>Mat Rois</td><td>III</td><td>0</td><td></td><td></td><td></td><td class="status-x">X</td></tr>
+                <tr class="member-row"><td>40</td><td>Miftah</td><td>III</td><td>0</td><td></td><td></td><td></td><td class="status-x">X</td></tr>
+                <tr class="member-row"><td>41</td><td>Minggus Desis</td><td>III</td><td>0</td><td></td><td></td><td></td><td class="status-x">X</td></tr>
+                <tr class="member-row"><td>42</td><td>Multazam</td><td>III</td><td>0</td><td></td><td></td><td></td><td class="status-x">X</td></tr>
+                <tr class="member-row"><td>43</td><td>Ozah</td><td>III</td><td>2</td><td>1</td><td>1</td><td></td><td class="status-ok">OK</td></tr>
+                <tr class="member-row"><td>44</td><td>Ozan</td><td>III</td><td>2</td><td>1</td><td>1</td><td></td><td class="status-ok">OK</td></tr>
+                <tr class="member-row"><td>45</td><td>Ridho</td><td>III</td><td>2</td><td>1</td><td>1</td><td></td><td class="status-ok">OK</td></tr>
+                <tr class="member-row"><td>46</td><td>Saebani</td><td>III</td><td>2</td><td></td><td>2</td><td></td><td class="status-ok">OK</td></tr>
+                <tr class="member-row"><td>47</td><td>Sariyono</td><td>III</td><td>2</td><td>2</td><td></td><td></td><td class="status-ok">OK</td></tr>
+                <tr class="member-row"><td>48</td><td>Supiyah</td><td>III</td><td>2</td><td>2</td><td></td><td></td><td class="status-ok">OK</td></tr>
+                <tr class="member-row"><td>49</td><td>Suyamto</td><td>III</td><td>2</td><td>2</td><td></td><td></td><td class="status-ok">OK</td></tr>
+                <tr class="member-row"><td>50</td><td>Suyasto</td><td>III</td><td>1</td><td>1</td><td></td><td></td><td class="status-ok">OK</td></tr>
+                <tr class="member-row"><td>51</td><td>Yogo</td><td>III</td><td>2</td><td>1</td><td>1</td><td></td><td class="status-ok">OK</td></tr>
+                <tr class="member-row"><td>52</td><td>Zuhrul</td><td>III</td><td>0</td><td></td><td></td><td></td><td class="status-x">X</td></tr>
+                <tr class="member-row"><td>53</td><td>Adhi</td><td>IV</td><td>1</td><td>1</td><td></td><td></td><td class="status-ok">OK</td></tr>
+                <tr class="member-row"><td>54</td><td>Aris Zakaria</td><td>IV</td><td>2</td><td></td><td>2</td><td></td><td class="status-ok">OK</td></tr>
+                <tr class="member-row"><td>55</td><td>Himatum Mualif</td><td>IV</td><td>1</td><td></td><td>1</td><td></td><td class="status-ok">OK</td></tr>
+                <tr class="member-row"><td>56</td><td>Ipul</td><td>IV</td><td>0</td><td></td><td></td><td></td><td class="status-x">X</td></tr>
+                <tr class="member-row"><td>57</td><td>Lilis I</td><td>IV</td><td>2</td><td>1</td><td>1</td><td></td><td class="status-ok">OK</td></tr>
+                <tr class="member-row"><td>58</td><td>M. Yusuf</td><td>IV</td><td>0</td><td></td><td></td><td></td><td class="status-x">X</td></tr>
+                <tr class="member-row"><td>59</td><td>Mahsun</td><td>IV</td><td>2</td><td>2</td><td></td><td></td><td class="status-ok">OK</td></tr>
+                <tr class="member-row"><td>60</td><td>Mami</td><td>IV</td><td>0</td><td></td><td></td><td></td><td class="status-x">X</td></tr>
+                <tr class="member-row"><td>61</td><td>Mu'thi</td><td>IV</td><td>1</td><td></td><td>1</td><td></td><td class="status-ok">OK</td></tr>
+                <tr class="member-row"><td>62</td><td>Mukopik</td><td>IV</td><td>2</td><td></td><td>2</td><td></td><td class="status-ok">OK</td></tr>
+                <tr class="member-row"><td>63</td><td>Siyamin</td><td>IV</td><td>2</td><td>2</td><td></td><td></td><td class="status-ok">OK</td></tr>
+                <tr class="member-row"><td>64</td><td>Thoriq</td><td>IV</td><td>1</td><td>1</td><td></td><td></td><td class="status-ok">OK</td></tr>
+                <tr class="member-row"><td>65</td><td>Umam</td><td>IV</td><td>2</td><td>1</td><td>1</td><td></td><td class="status-ok">OK</td></tr>
+                <tr class="member-row"><td>66</td><td>Wawan</td><td>IV</td><td>1</td><td></td><td>1</td><td></td><td class="status-ok">OK</td></tr>
+                <tr class="member-row"><td>67</td><td>Zein</td><td>IV</td><td>1</td><td>1</td><td></td><td></td><td class="status-ok">OK</td></tr>
+                <tr class="summary-row"><td colspan="3">Jumlah Rokok/Rp</td><td>88</td><td>43</td><td>45</td><td>50000</td><td></td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Tabel Pak Rambat -->
+    <div id="table-rambat" class="table-container hidden">
+        <h2>Arisan Pak Rambat</h2>
+        <table id="rambat-table">
+            <thead>
+                <tr>
+                    <th>No</th>
+                    <th>Nama</th>
+                    <th>RT</th>
+                    <th>Jumlah Rokok/Orang</th>
+                    <th>Djarum Super</th>
+                    <th>GG Surya 12</th>
+                    <th>Rp</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="member-row"><td>1</td><td>Irul</td><td>I</td><td>2</td><td></td><td>2</td><td></td><td class="status-ok">OK</td></tr>
+                <tr class="member-row"><td>2</td><td>Puji</td><td>I</td><td>1</td><td></td><td>1</td><td></td><td class="status-ok">OK</td></tr>
+                <tr class="member-row"><td>3</td><td>Rambat</td><td>I</td><td>0</td><td></td><td></td><td></td><td class="status-x">X</td></tr>
+                <tr class="member-row"><td>4</td><td>Sahrul</td><td>I</td><td>2</td><td></td><td>2</td><td></td><td class="status-ok">OK</td></tr>
+                <tr class="member-row"><td>5</td><td>Sidiq</td><td>I</td><td>0</td><td></td><td></td><td></td><td class="status-x">X</td></tr>
+                <tr class="member-row"><td>6</td><td>Solikin</td><td>I</td><td>1</td><td></td><td>1</td><td></td><td class="status-ok">OK</td></tr>
+                <tr class="member-row"><td>7</td><td>Suryadi</td><td>I</td><td>2</td><td></td><td>2</td><td></td><td class="status-ok">OK</td></tr>
+                <tr class="member-row"><td>8</td><td>Tofi Cahyono</td><td>I</td><td>2</td><td></td><td>2</td><td></td><td class="status-ok">OK</td></tr>
+                <tr class="member-row"><td>9</td><td>Amalia</td><td>II</td><td>2</td><td>1</td><td>1</td><td></td><td class="status-ok">OK</td></tr>
+                <tr class="member-row"><td>10</td><td>Amin Makruf</td><td>II</td><td>1</td><td>1</td><td></td><td></td><td class="status-ok">OK</td></tr>
+                <tr class="member-row"><td>11</td><td>Chozin Asror</td><td>II</td><td>0</td><td></td><td></td><td></td><td class="status-x">X</td></tr>
+                <tr class="member-row"><td>12</td><td>Dwi P</td><td>II</td><td>0</td><td></td><td></td><td>51000</td><td class="status-ok">OK</td></tr>
+                <tr class="member-row"><td>13</td><td>Eko Subagyo</td><td>II</td><td>1</td><td>1</td><td></td><td></td><td class="status-ok">OK</td></tr>
+                <tr class="member-row"><td>14</td><td>Fahrul M</td><td>II</td><td>0</td><td></td><td></td><td></td><td class="status-x">X</td></tr>
+                <tr class="member-row"><td>15</td><td>Fauzul Miftah</td><td>II</td><td>0</td><td></td><td></td><td></td><td class="status-x">X</td></tr>
+                <tr class="member-row"><td>16</td><td>Iqbal Marwan</td><td>II</td><td>0</td><td></td><td></td><td></td><td class="status-x">X</td></tr>
+                <tr class="member-row"><td>17</td><td>Lisan</td><td>II</td><td>0</td><td></td><td></td><td></td><td class="status-x">X</td></tr>
+                <tr class="member-row"><td>18</td><td>Mat Khoir</td><td>II</td><td>0</td><td></td><td></td><td></td><td class="status-x">X</td></tr>
+                <tr class="member-row"><td>19</td><td>Mat Rifai</td><td>II</td><td>2</td><td>2</td><td></td><td></td><td class="status-ok">OK</td></tr>
+                <tr class="member-row"><td>20</td><td>Muam</td><td>II</td><td>0</td><td></td><td></td><td></td><td class="status-x">X</td></tr>
+                <tr class="member-row"><td>21</td><td>Mufadhol</td><td>II</td><td>2</td><td>2</td><td></td><td></td><td class="status-ok">OK</td></tr>
+                <tr class="member-row"><td>22</td><td>Munir</td><td>II</td><td>2</td><td>1</td><td>1</td><td></td><td class="status-ok">OK</td></tr>
+                <tr class="member-row"><td>23</td><td>Muntolip</td><td>II</td><td>2</td><td>1</td><td>1</td><td></td><td class="status-ok">OK</td></tr>
+                <tr class="member-row"><td>24</td><td>Nur Khafi</td><td>II</td><td>2</td><td>1</td><td>1</td><td></td><td class="status-ok">OK</td></tr>
+                <tr class="member-row"><td>25</td><td>Onjin</td><td>II</td><td>0</td><td></td><td></td><td></td><td class="status-x">X</td></tr>
+                <tr class="member-row"><td>26</td><td>Ratna</td><td>II</td><td>2</td><td>1</td><td>1</td><td></td><td class="status-ok">OK</td></tr>
+                <tr class="member-row"><td>27</td><td>Rozi</td><td>II</td><td>2</td><td></td><td>2</td><td></td><td class="status-ok">OK</td></tr>
+                <tr class="member-row"><td>28</td><td>Safawi</td><td>II</td><td>2</td><td>1</td><td>1</td><td></td><td class="status-ok">OK</td></tr>
+                <tr class="member-row"><td>29</td><td>Sodiqun</td><td>II</td><td>2</td><td></td><td>2</td><td></td><td class="status-ok">OK</td></tr>
+                <tr class="member-row"><td>30</td><td>Sugiyanto</td><td>II</td><td>0</td><td></td><td></td><td></td><td class="status-x">X</td></tr>
+                <tr class="member-row"><td>31</td><td>Tangin</td><td>II</td><td>0</td><td></td><td></td><td></td><td class="status-x">X</td></tr>
+                <tr class="member-row"><td>32</td><td>Taqin</td><td>II</td><td>2</td><td>1</td><td>1</td><td></td><td class="status-ok">OK</td></tr>
+                <tr class="member-row"><td>33</td><td>Laras Pak Dar</td><td>III</td><td>2</td><td></td><td>2</td><td></td><td class="status-ok">OK</td></tr>
+                <tr class="member-row"><td>34</td><td>Hariyanto</td><td>III</td><td>2</td><td>2</td><td></td><td></td><td class="status-ok">OK</td></tr>
+                <tr class="member-row"><td>35</td><td>Khabib A</td><td>III</td><td>2</td><td>1</td><td>1</td><td></td><td class="status-ok">OK</td></tr>
+                <tr class="member-row"><td>36</td><td>Kun</td><td>III</td><td>2</td><td>1</td><td>1</td><td></td><td class="status-ok">OK</td></tr>
+                <tr class="member-row"><td>37</td><td>M Ikhsan M</td><td>III</td><td>0</td><td></td><td></td><td></td><td class="status-x">X</td></tr>
+                <tr class="member-row"><td>38</td><td>Mat Fakih</td><td>III</td><td>0</td><td></td><td></td><td>50000</td><td class="status-ok">OK</td></tr>
+                <tr class="member-row"><td>39</td><td>Mat Rois</td><td>III</td><td>0</td><td></td><td></td><td></td><td class="status-x">X</td></tr>
+                <tr class="member-row"><td>40</td><td>Miftah</td><td>III</td><td>0</td><td></td><td></td><td></td><td class="status-x">X</td></tr>
+                <tr class="member-row"><td>41</td><td>Minggus Desis</td><td>III</td><td>0</td><td></td><td></td><td></td><td class="status-x">X</td></tr>
+                <tr class="member-row"><td>42</td><td>Multazam</td><td>III</td><td>2</td><td></td><td>2</td><td></td><td class="status-ok">OK</td></tr>
+                <tr class="member-row"><td>43</td><td>Ozah</td><td>III</td><td>2</td><td></td><td>2</td><td></td><td class="status-ok">OK</td></tr>
+                <tr class="member-row"><td>44</td><td>Ozan</td><td>III</td><td>2</td><td>1</td><td>1</td><td></td><td class="status-ok">OK</td></tr>
+                <tr class="member-row"><td>45</td><td>Ridho</td><td>III</td><td>2</td><td>2</td><td></td><td></td><td class="status-ok">OK</td></tr>
+                <tr class="member-row"><td>46</td><td>Saebani</td><td>III</td><td>2</td><td>1</td><td>1</td><td></td><td class="status-ok">OK</td></tr>
+                <tr class="member-row"><td>47</td><td>Sariyono</td><td>III</td><td>2</td><td>2</td><td></td><td></td><td class="status-ok">OK</td></tr>
+                <tr class="member-row"><td>48</td><td>Supiyah</td><td>III</td><td>2</td><td>1</td><td>1</td><td></td><td class="status-ok">OK</td></tr>
+                <tr class="member-row"><td>49</td><td>Suyamto</td><td>III</td><td>0</td><td></td><td></td><td></td><td class="status-x">X</td></tr>
+                <tr class="member-row"><td>50</td><td>Suyasto</td><td>III</td><td>0</td><td></td><td></td><td></td><td class="status-x">X</td></tr>
+                <tr class="member-row"><td>51</td><td>Yogo</td><td>III</td><td>2</td><td>1</td><td>1</td><td></td><td class="status-ok">OK</td></tr>
+                <tr class="member-row"><td>52</td><td>Zuhrul</td><td>III</td><td>0</td><td></td><td></td><td></td><td class="status-x">X</td></tr>
+                <tr class="member-row"><td>53</td><td>Adhi</td><td>IV</td><td>1</td><td>1</td><td></td><td></td><td class="status-ok">OK</td></tr>
+                <tr class="member-row"><td>54</td><td>Aris Zakaria</td><td>IV</td><td>1</td><td></td><td>1</td><td></td><td class="status-ok">OK</td></tr>
+                <tr class="member-row"><td>55</td><td>Himatum Mualif</td><td>IV</td><td>0</td><td></td><td></td><td></td><td class="status-x">X</td></tr>
+                <tr class="member-row"><td>56</td><td>Ipul</td><td>IV</td><td>0</td><td></td><td></td><td></td><td class="status-x">X</td></tr>
+                <tr class="member-row"><td>57</td><td>Lilis I</td><td>IV</td><td>2</td><td>1</td><td>1</td><td></td><td class="status-ok">OK</td></tr>
+                <tr class="member-row"><td>58</td><td>M. Yusuf</td><td>IV</td><td>1</td><td></td><td>1</td><td></td><td class="status-ok">OK</td></tr>
+                <tr class="member-row"><td>59</td><td>Mahsun</td><td>IV</td><td>1</td><td>1</td><td></td><td></td><td class="status-ok">OK</td></tr>
+                <tr class="member-row"><td>60</td><td>Mami</td><td>IV</td><td>2</td><td>1</td><td>1</td><td></td><td class="status-ok">OK</td></tr>
+                <tr class="member-row"><td>61</td><td>Mu'thi</td><td>IV</td><td>1</td><td></td><td>1</td><td></td><td class="status-ok">OK</td></tr>
+                <tr class="member-row"><td>62</td><td>Mukopik</td><td>IV</td><td>0</td><td></td><td></td><td></td><td class="status-x">X</td></tr>
+                <tr class="member-row"><td>63</td><td>Siyamin</td><td>IV</td><td>2</td><td>2</td><td></td><td></td><td class="status-ok">OK</td></tr>
+                <tr class="member-row"><td>64</td><td>Thoriq</td><td>IV</td><td>0</td><td></td><td></td><td></td><td class="status-x">X</td></tr>
+                <tr class="member-row"><td>65</td><td>Umam</td><td>IV</td><td>0</td><td></td><td></td><td></td><td class="status-x">X</td></tr>
+                <tr class="member-row"><td>66</td><td>Wawan</td><td>IV</td><td>0</td><td></td><td></td><td></td><td class="status-x">X</td></tr>
+                <tr class="member-row"><td>67</td><td>Zein</td><td>IV</td><td>1</td><td>1</td><td></td><td></td><td class="status-ok">OK</td></tr>
+                <tr class="summary-row"><td colspan="3">Jumlah Rokok/Rp</td><td>70</td><td>32</td><td>38</td><td>101000</td><td></td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        function filterPenerima() {
+            const selected = document.getElementById('penerima').value;
+            const tableMami = document.getElementById('table-mami');
+            const tableRambat = document.getElementById('table-rambat');
+            if (selected === 'mami') {
+                tableMami.classList.remove('hidden');
+                tableRambat.classList.add('hidden');
+            } else if (selected === 'rambat') {
+                tableMami.classList.add('hidden');
+                tableRambat.classList.remove('hidden');
+            }
+            filterNama(); // Panggil filterNama untuk memastikan pencarian diperbarui
+        }
+
+        function filterNama() {
+            const searchTerm = document.getElementById('nama').value.toLowerCase();
+            const visibleTable = document.querySelector('.table-container:not(.hidden) table');
+            if (visibleTable) {
+                const rows = visibleTable.querySelectorAll('tr.member-row');
+                rows.forEach(row => {
+                    const nameCell = row.cells[1].textContent.toLowerCase();
+                    row.style.display = nameCell.includes(searchTerm) ? '' : 'none';
+                });
+            }
+        }
+
+        function exportToPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            const selected = document.getElementById('penerima').value;
+            const tableId = selected === 'mami' ? 'mami-table' : 'rambat-table';
+            const table = document.getElementById(tableId);
+            const title = selected === 'mami' ? 'Arisan Pak Mami' : 'Arisan Pak Rambat';
+
+            doc.setFontSize(16);
+            doc.text('ARISAN ROKOK KALITENGAH', 10, 10);
+            doc.setFontSize(12);
+            doc.text(title, 10, 20);
+
+            doc.autoTable({
+                html: table,
+                startY: 30,
+                theme: 'grid',
+                headStyles: { fillColor: [52, 152, 219], textColor: [255, 255, 255] },
+                bodyStyles: { textColor: [44, 62, 80] },
+                alternateRowStyles: { fillColor: [247, 249, 252] },
+                styles: { fontSize: 10, cellPadding: 2 },
+                columnStyles: {
+                    7: { textColor: function(row) {
+                        return row.cells[7].textContent === 'OK' ? [39, 174, 96] : [192, 57, 43];
+                    }}
+                },
+                didParseCell: function(data) {
+                    if (data.row.section === 'body' && data.row.index === table.querySelectorAll('tr').length - 2) {
+                        data.cell.styles.fillColor = [33, 150, 83];
+                        data.cell.styles.textColor = [0, 0, 0];
+                        data.cell.styles.fontStyle = 'bold';
+                    }
+                }
+            });
+
+            doc.save(`${title}.pdf`);
+        }
+    </script>
+</body>
+</html>
